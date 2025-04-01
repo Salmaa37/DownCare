@@ -1,113 +1,102 @@
-
-import 'package:downcare/Screens/Feedbacks.dart';
-import 'package:downcare/Screens/main.dart';
+import 'package:downcare/Apis/ApiManager.dart';
+import 'package:downcare/ReusableComponents/AppButton.dart';
+import 'package:downcare/Screens/Tabs/FeedbackSuccessDialog.dart';
 import 'package:downcare/utils/Colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
+import '../../ReusableComponents/Alert.dart';
+import '../MomDemo/MomSection/Feedbacks.dart';
 class FeedbackTab extends StatelessWidget {
-  const FeedbackTab({super.key});
-
+  final feedbackController=TextEditingController();
+  FeedbackTab({super.key});
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 15,
-                backgroundImage: AssetImage("assets/images/person.jpg"),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: MediaQuery.of(context).size.width*0.2
-                ),
-                margin: EdgeInsets.only(
-                  left: 10
-                ),
-                decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 0.2, // مقدار التمويه
-                          offset: Offset(0, 1),
-                          color: Colours.primaryyellow
-                      )
-                    ],
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colours.primarygrey
-                ),
-                child: Text("alaa@gmail.com",
-
-                  style: TextStyle(
-                  color: Colours.primaryblue
-                ),),
-              )
-            ],
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(
-              vertical: 20
-            ),
-            padding: EdgeInsets.only(
-              left: 20
-            ),
-            height: MediaQuery.of(context).size.height*0.4,
-            decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                      blurRadius: 0.2, // مقدار التمويه
-                      offset: Offset(0, 1),
-                      color: Colours.primaryyellow
-                  )
-                ],
-              color: Colours.primarygrey,
-              borderRadius: BorderRadius.circular(10)
-            ),
-            child: TextField(
-              decoration: InputDecoration(
-                 border: InputBorder.none,
-                hintStyle: TextStyle(
-                  fontSize: 13,
-                  color: Colours.primaryblue
-                ),
-                hintText: "write your feedback here"
-              ),
-            ),
-          ),
-            Spacer(),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width*0.2,
-                  vertical: 16
-                ),
-                backgroundColor: Colours.primaryyellow
-              ),
-                onPressed: (){
-                Navigator.pushNamed(context,Feedbacks.routeName);
-                }, child:
-            Text("Publish your feedback",style: TextStyle(
-              color: Colours.primaryblue
-            ),)
-            ),
-          SizedBox(
-            height: 10,
-          ),
-          Text.rich(
-            TextSpan(
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextSpan(text: "if you want to read other feedbacks", style: TextStyle(color: Colors.black, fontSize:13)),
-                TextSpan(text: 'Click here ', style: TextStyle(color:Colours.primaryblue , fontSize: 16)),
+                Text(
+                  "We value your feedback!",
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colours.primaryblue,
+                  ),
+                ),
+                Icon(Icons.sentiment_satisfied_alt_rounded,
+                  color: Colors.green,
+                  size: 7.w,
+                )
               ],
             ),
-          )
+            SizedBox(height: 3.h),
+           Expanded(
+             child: Container(
+               padding: EdgeInsets.only(
+                 left: 2.w
+               ),
+               decoration: BoxDecoration(
+                 color: Colours.primarygrey,
+                 borderRadius: BorderRadius.circular(10),
+               ),
+               child: TextField(
+                 controller: feedbackController,
+                 maxLines: null,
+                 minLines: 1,
+                 decoration: InputDecoration(
+                   border: InputBorder.none,
+                   hintStyle: TextStyle(
+                     fontSize: 16.sp,
+                     color: Colours.primaryblue
+                   ),
+                   hintText: "Write your feedback here "
+                 ),
+               ),
+             ),
+           ),
+            SizedBox(
+              height:15.h ,
+            ),
+            Column(
+              children: [
+                AppButton(txt: "Publish your feedback",colorbtn: Colours.primaryyellow, onclick: (){
+                  ApiManager.SendFeedback(
+                      feedbackController.text, onSuccess: (){
+                    showDialog(context: context, builder: (context) =>FeedbackSuccessDialog( txt: "Your feedback published successfully!",) );
 
-        ],
+                  },onError: (error){
+                    showDialog(context: context, builder: (context) {
+                      return Alert(txt: "$error",title: "Error!",titleColor: Colors.red,);
+                    },);
+                  });
+                }),
+                SizedBox(height: 1.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("if you want to read feedbacks ",style: TextStyle(
+                        fontSize: 15.sp
+                    ),),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, Feedbacks.routeName);
+                      },
+                      child: Text("Click here",style: TextStyle(
+                          color: Colours.primaryblue,
+                          fontSize: 16.sp
+                      ),),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

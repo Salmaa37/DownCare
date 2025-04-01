@@ -1,18 +1,19 @@
 
-import 'package:downcare/Screens/Login.dart';
+import 'package:downcare/utils/AppImages.dart';
 import 'package:downcare/utils/Colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:sizer/sizer.dart';
+import 'UserAccount/Login.dart';
 class Welcome extends StatelessWidget {
   static const String routeName="welcome";
-  const Welcome({super.key});
-
+   Welcome({super.key});
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Image.asset("assets/images/welcomebg.png",fit: BoxFit.fill,),
+        Image.asset("${AppImages.welcomebg}",
+          fit: BoxFit.fill,width:double.infinity ,),
         Scaffold(
           backgroundColor: Colors.transparent,
           body: Padding(
@@ -24,32 +25,31 @@ class Welcome extends StatelessWidget {
                 Text.rich(
                   TextSpan(
                     children: [
-                      TextSpan(text: 'Welcome\n', style: TextStyle(color: Colours.primaryblue, fontSize: 30)),
-                      TextSpan(text: '   To DownCare', style: TextStyle(color:Colours.primaryblue , fontSize: 13)),
+                      TextSpan(text: 'Welcome\n', style: TextStyle(color: Colours.primaryblue, fontSize: 24.sp)),
+                      TextSpan(text: '   To DownCare', style: TextStyle(color:Colours.primaryblue , fontSize: 16.sp)),
                     ],
                   ),
                 ),
                 Text(
-
                   "Down Syndrome it doesn’t\n mean I’m down it means I\n help people who are\n feeling down ",
                   style: TextStyle(
-                    height: 2.7,
-                  fontSize: 17
+                    height: 0.4.h,
+                  fontSize: 17.sp
                 ),),
                 Center(
                   child: ElevatedButton(
 
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(
-                        vertical: 19,
+                        vertical: 2.h,
                         horizontal: MediaQuery.of(context).size.width*0.27
                       ),
                       backgroundColor: Colours.primaryblue
                     ),
                       onPressed: (){
-                     Navigator.pushReplacementNamed(context, Login.routeName);
+                         Navigator.pushReplacementNamed(context, Login.routeName);
                       }, child: Text("Get Started",style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                      color: Colors.white
                   ),)),
                 )
