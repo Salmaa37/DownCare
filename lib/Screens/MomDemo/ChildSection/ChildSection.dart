@@ -50,11 +50,14 @@ class _ChildSectionState extends State<ChildSection> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-         actions: [
-           IconButton(onPressed: (){
-             Navigator.pushNamed(context, ChildReport.routeName);
-           }, icon: Icon(Icons.text_snippet_sharp,color: Colors.white,size: 7.w,))
-         ],
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, ChildReport.routeName);
+            },
+            icon: Icon(Icons.text_snippet_sharp, color: Colors.white, size: 7.w),
+          )
+        ],
         title: const Text("Child Section"),
       ),
       body: Padding(
@@ -111,12 +114,23 @@ class _ChildSectionState extends State<ChildSection> {
                           backgroundColor: Colours.primaryyellow,
                         ),
                         onPressed: () {
-                          if (index == 0) {
-                            Navigator.pushNamed(context, SectionLevels.routeName);
-                          } else if (index == 1) {
-                            Navigator.pushNamed(context, LinguisticsLevels.routeName);
-                          } else {
-                            Navigator.pushNamed(context, SkillsDevelopment.routeName);
+                          switch (index) {
+                            case 0:
+                              Navigator.pushNamed(
+                                context,
+                                SectionLevels.routeName,
+                                arguments: {'type': 'Communication'},
+                              );
+                              break;
+                            case 1:
+                              Navigator.pushNamed(
+                                context,
+                                LinguisticsLevels.routeName,
+                                arguments: {'type': 'Linguistics'},
+                              );
+                              break;
+                            default:
+                              Navigator.pushNamed(context, SkillsDevelopment.routeName);
                           }
                         },
                         child: Text(
@@ -124,8 +138,7 @@ class _ChildSectionState extends State<ChildSection> {
                           style: TextStyle(
                             color: Colours.primaryblue,
                             fontSize: 15.sp,
-                            fontWeight: FontWeight.w500
-
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),

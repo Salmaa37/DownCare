@@ -1,14 +1,13 @@
-import 'package:downcare/Screens/Tabs/FeedbackTab.dart';
-import 'package:downcare/Screens/Tabs/HomeTab.dart';
-import 'package:downcare/Screens/Tabs/MomSettings.dart';
+import 'package:downcare/Screens/MomDemo/MomSection/Tabs/FeedbackTab.dart';
+import 'package:downcare/Screens/MomDemo/MomSection/Tabs/HomeTab.dart';
+import 'package:downcare/Screens/MomDemo/MomSection/Tabs/MomSettings.dart';
 import 'package:downcare/utils/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'MomDemo/MomSection/ChatRoomWithDoctors/MomHistory.dart';
 class HomeScreen extends StatefulWidget {
   static const String routeName = "home";
-
   const HomeScreen({super.key});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -16,13 +15,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
 
-  final List<Widget> tabs = [HomeTab(), FeedbackTab(), MomSetting()];
+  final List<Widget> tabs = [HomeTab(), FeedbackTab(), MomSetting(),];
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           centerTitle: true,

@@ -1,110 +1,227 @@
+import 'package:downcare/Models/MessageModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:signalr_netcore/json_hub_protocol.dart';
 import 'package:signalr_netcore/signalr_client.dart';
-
 class SignalRService {
-  static final SignalRService _instance = SignalRService._internal();
   late HubConnection _hubConnection;
   bool isConnected = false;
-  Function(String)? onMessageReceived;
-  factory SignalRService() => _instance;
-
-  SignalRService._internal();
-
+  Function(MessageModel messagemodel)? onMessageReceived;
+  Function(int id)? onMessageDeleted;
+  /// Connects
   Future<void> connect() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
-    if (token == null || token.isEmpty) {
-      print(" فشل في الاتصال: التوكن غير موجود!");
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    if (token.isEmpty) {
+      print(' التوكن غير موجود');
       return;
     }
-    print(" التوكن المستخدم: $token");
+    print(' $token');
+    final serverUrl = 'http://downcare.runasp.net/ChatHub?token=$token';
+    final options = HttpConnectionOptions(
+      transport: HttpTransportType.WebSockets,
+    );
+    _hubConnection = HubConnectionBuilder()
+        .withUrl(serverUrl, options: options)
+        .build();
+
+    _hubConnection.onclose((error) async {
+      isConnected = false;
+      print(' ${error?.toString()}');
+      await Future.delayed(Duration(seconds: 5));
+      await connect();
+    });
+
+    // Listener for group messages
+    _hubConnection.on('ReceiveGroupMessage', (args) {
+      try {
+        print(" $args");
+
+        if (args != null && args is List && args.isNotEmpty && args.first is Map) {
+          final Map<String, dynamic> messageData = Map<String, dynamic>.from(args.first);
+
+          final messageModel = MessageModel(
+            messageId: messageData['id'] is int
+                ? messageData['id']
+                : int.tryParse(messageData['id']?.toString() ?? '0') ?? 0,
+            message: messageData['message']?.toString() ?? '',
+            userName: messageData['userName']?.toString() ?? 'Unknown',
+            userImageURL: messageData['userImage']?.toString() ?? '',
+            displayTime: messageData['displayTime']?.toString() ?? '',
+            dateTime: messageData['dateTime']?.toString() ?? DateTime.now().toIso8601String(),
+          );
+
+          print(" ${messageModel.toString()}");
+          onMessageReceived?.call(messageModel);
+        }
+      } catch (e, stack) {
+        print('Stack: $stack');
+      }
+    });
+    // Listener for user join event
+    _hubConnection.on('UserJoined', (args) {
+      try {
+        final message = _safeParseArg(args);
+        print(message);
+
+        MessageModel systemMessage = MessageModel(
+          messageId: 0,
+          message: message,
+          userName: 'System',
+          userImageURL: '',
+          displayTime: '',
+          dateTime: '',
+        );
+        onMessageReceived?.call(systemMessage);
+      } catch (e) {
+        print(' $e');
+      }
+    });
+    // Listener for user left event
+    _hubConnection.on('UserLeft', (args) {
+      try {
+        final message = _safeParseArg(args);
+        print(message);
+        MessageModel systemMessage = MessageModel(
+          messageId: 0,
+          message: message,
+          userName: 'System',
+          userImageURL: '',
+          displayTime: '',
+          dateTime: '',
+        );
+        onMessageReceived?.call(systemMessage);
+      } catch (e) {
+        print(' $e');
+      }
+    });
+    // Listener for delete message
+    _hubConnection.on('MessageDeleted', (args) {
+      print("جاء حدث الحذف: $args");
+      try {
+        if (args != null && args is List && args.isNotEmpty) {
+          final data = args.first;
+          if (data is Map && data.containsKey('messageId')) {
+            final messageIdValue = data['messageId'];
+            final messageId = messageIdValue is int
+                ? messageIdValue
+                : int.tryParse(messageIdValue.toString()) ?? 0;
+
+            print("ID الرسالة المحذوفة: $messageId");
+            if (messageId != 0) {
+              onMessageDeleted?.call(messageId);
+            }
+          }
+        }
+      } catch (e) {
+        print("خطأ في MessageDeleted: $e");
+      }
+    });
+
+
+
+    // Listener for doctor messages
+    _hubConnection.on('ReceiveMessage', (args) {
+      try {
+        print(" $args");
+
+        if (args != null && args is List && args.isNotEmpty && args.first is Map) {
+          final Map<String, dynamic> messageData = Map<String, dynamic>.from(args.first);
+
+          final messageModel = MessageModel(
+            messageId: messageData['id'] is int
+                ? messageData['id']
+                : int.tryParse(messageData['id']?.toString() ?? '0') ?? 0,
+            message: messageData['message']?.toString() ?? '',
+            userName: messageData['userName']?.toString() ?? 'Unknown',
+            userImageURL: messageData['userImage']?.toString() ?? '',
+            displayTime: messageData['displayTime']?.toString() ?? '',
+            dateTime: messageData['dateTime']?.toString() ?? DateTime.now().toIso8601String(),
+          );
+
+          print(" ${messageModel.toString()}");
+          onMessageReceived?.call(messageModel);
+        }
+      } catch (e, stack) {
+        print(' $e');
+        print('Stack: $stack');
+      }
+    });
+
+
     try {
-      _hubConnection = HubConnectionBuilder()
-          .withUrl("http://downcare.runasp.net/ChatHub", options: HttpConnectionOptions(
-        transport: HttpTransportType.WebSockets,
-        accessTokenFactory: () async => token,
-      )).withHubProtocol(JsonHubProtocol()).build();
+
       await _hubConnection.start();
       isConnected = true;
-      print(" تم الاتصال بنجاح" );
-      _hubConnection.on("ReceiveMessage", (arguments) {
-        if (arguments != null && arguments.isNotEmpty && onMessageReceived != null) {
-          onMessageReceived!(arguments.first.toString());
-        }
-      });
+      print(' تم الاتصال بنجاح');
     } catch (e) {
-      print(" فشل في الاتصال: $e");
+      print(' فشل في الاتصال: ${e.toString()}');
     }
   }
 
-
-
-  Future<void> sendMessage(String userId, String message) async {
-    if (_hubConnection.state != HubConnectionState.Connected) {
-      print(" الاتصال غير متاح. يرجى إعادة المحاولة لاحقًا.");
-      return;
-    }
-    if (userId.isEmpty || message.isEmpty) {
-      print(" خطأ: لا يمكن إرسال رسالة فارغة أو بدون معرف المستخدم.");
+  Future<void> sendMessage(String message) async {
+    if (!isConnected) {
+      print(' غير متصل');
       return;
     }
     try {
-      await _hubConnection.invoke("SendMessage", args: [userId, message]);
-      print(" تم إرسال الرسالة بنجاح إلى $userId: $message");
+      await _hubConnection.invoke('SendGroupMessage', args: [message]);
+      print(' $message');
     } catch (e) {
-      print(" SendMessage Error: ${e.toString()}");
+      print(' ${e.toString()}');
     }
   }
 
-
-
+  Future<void> sendDoctorMessage(String id, String message) async {
+    if (!isConnected) {
+      print(' غير متصل، ');
+      return;
+    }
+    try {
+      await _hubConnection.invoke('SendMessage', args: [id, message]);
+      print(' تم إرسال الرسالة: $message');
+    } catch (e) {
+      print(' ${e.toString()}');
+    }
+  }
 
 
   Future<void> joinGroup() async {
-    if (!isConnected || _hubConnection.state != HubConnectionState.Connected) {
-      print("الاتصال غير متاح. يرجى إعادة المحاولة لاحقًا.");
+    if (!isConnected) {
+      print('غير متصل ');
       return;
     }
     try {
-      await _hubConnection.invoke("JoiGroup");
-
-      print("تم الانضمام إلى الجروب بنجاح");
+      final result = await _hubConnection.invoke('JoinGroup');
+      print(' انضممت إلى الجروب : $result');
     } catch (e) {
-      print("فشل الانضمام إلى الجروب: ${e.toString()}");
+      print(' فشل في الانضمام للجروب: ${e.toString()}');
     }
   }
 
-
-
-
-
-
-
-
-
-  void  listenForUserJoined() {
-    _hubConnection.on("UserJoined", (arguments) {
-      if (arguments != null && arguments.isNotEmpty && arguments[0] is Map<String, dynamic>) {
-        final userData = arguments[0] as Map<String, dynamic>;
-        final userId = userData["UserId"];
-        final message = userData["Message"];
-        print("$message (User ID: $userId)");
-      } else {
-        print("Invalid UserJoined event data.");
-      }
-    });
-  }
-
-
-  void disconnect() {
+  Future<void> disconnect() async {
     if (isConnected) {
-      _hubConnection.stop();
+      await _hubConnection.stop();
       isConnected = false;
-      print("انقطع الاتصال ");
+      print(' تم غلق الاتصال');
     }
   }
 
+  /// Helper function
+  String _safeParseArg(List<Object?>? args) {
+    return (args != null && args.isNotEmpty && args.first != null)
+        ? args.first.toString()
+        : '';
+  }
 
-
+  Future<void> leaveGroup() async {
+    if (!isConnected) {
+      print('️ غير متصل');
+      return;
+    }
+    try {
+      await _hubConnection.invoke('LeftGroup');
+      print(' تم مغادرة الجروب');
+    } catch (e) {
+      print(' ${e.toString()}');
+    }
+  }
 }

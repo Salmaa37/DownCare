@@ -1,10 +1,12 @@
+import 'package:downcare/Models/ChatRoomModel.dart';
 import 'package:flutter/cupertino.dart';
-import '../Screens/DoctorDemo/ChangeDoctorPass.dart';
-import '../Screens/DoctorDemo/ChatRooms.dart';
-import '../Screens/DoctorDemo/DoctorArticle.dart';
-import '../Screens/DoctorDemo/DoctorEditProfile.dart';
-import '../Screens/DoctorDemo/DoctorProfile.dart';
-import '../Screens/DoctorDemo/OtherDoctorsArticles.dart';
+import '../Screens/DoctorDemo/DoctorAccount/ChangeDoctorPass.dart';
+import '../Screens/DoctorDemo/DoctorChats/ChatRooms.dart';
+import '../Screens/DoctorDemo/DoctorArticles/DoctorArticle.dart';
+import '../Screens/DoctorDemo/DoctorAccount/DoctorEditProfile.dart';
+import '../Screens/DoctorDemo/DoctorAccount/DoctorProfile.dart';
+import '../Screens/DoctorDemo/DoctorArticles/OtherDoctorsArticles.dart';
+import '../Screens/DoctorDemo/DoctorChats/PrivateChatWithMom.dart';
 import '../Screens/DoctorDemo/WelcomeDoc.dart';
 import '../Screens/HomeScreen.dart';
 import '../Screens/MomDemo/ChildSection/ChildData.dart';
@@ -19,21 +21,24 @@ import '../Screens/MomDemo/ChildSection/Linguistics/LinguisticsLevels.dart';
 import '../Screens/MomDemo/ChildSection/Linguistics/LinguisticsResult.dart';
 import '../Screens/MomDemo/ChildSection/Linguistics/LinguisticsTest.dart';
 import '../Screens/MomDemo/ChildSection/SkillsDevelopment/SkillsDevelopment.dart';
-import '../Screens/MomDemo/MomSection/AboutDown.dart';
-import '../Screens/MomDemo/MomSection/Article.dart';
-import '../Screens/MomDemo/MomSection/DoctorChat.dart';
-import '../Screens/MomDemo/MomSection/DoctorDetails.dart';
-import '../Screens/MomDemo/MomSection/Feedbacks.dart';
-import '../Screens/MomDemo/MomSection/MomChat.dart';
+import '../Screens/MomDemo/MomSection/AboutDown/AboutDown.dart';
+import '../Screens/MomDemo/MomSection/DoctorsArticles/Article.dart';
+import '../Screens/MomDemo/MomSection/ChatRoomWithDoctors/DoctorChat.dart';
+import '../Screens/MomDemo/MomSection/ChatRoomWithDoctors/DoctorDetails.dart';
+import '../Screens/MomDemo/MomSection/MomsFeedbacks/Feedbacks.dart';
+import '../Screens/MomDemo/MomSection/ChatRoomWithMoms/GroupMembers.dart';
+import '../Screens/MomDemo/MomSection/ChatRoomWithMoms/MomChat.dart';
+import '../Screens/MomDemo/MomSection/ChatRoomWithDoctors/MomHistory.dart';
 import '../Screens/MomDemo/MomSection/MomSection.dart';
-import '../Screens/MomDemo/MomSection/Search.dart';
+import '../Screens/MomDemo/MomSection/ChatRoomWithDoctors/PrivateChatWithDoc.dart';
+import '../Screens/MomDemo/MomSection/ChatRoomWithDoctors/Search.dart';
 import '../Screens/SplashScreen.dart';
-import '../Screens/UserAccount/ChangePass.dart';
-import '../Screens/UserAccount/EditProfile.dart';
+import '../Screens/MomDemo/MomSection/MomAccount/ChangePass.dart';
+import '../Screens/MomDemo/MomSection/MomAccount/EditProfile.dart';
 import '../Screens/UserAccount/ForgotPass.dart';
 import '../Screens/UserAccount/Login.dart';
 import '../Screens/UserAccount/PassCode.dart';
-import '../Screens/UserAccount/Profile.dart';
+import '../Screens/MomDemo/MomSection/MomAccount/Profile.dart';
 import '../Screens/UserAccount/ResetPass.dart';
 import '../Screens/UserAccount/SignUp.dart';
 import '../Screens/Welcome.dart';
@@ -77,5 +82,16 @@ class AppRoutes {
     LinguisticsDetails.routeName: (context) => LinguisticsDetails(),
     LinguisticsTest.routeName: (context) => LinguisticsTest(),
     LinguisticsResult.routeName: (context) => LinguisticsResult(),
+    GroupMembers.routeName: (context) => GroupMembers(),
+    MomHistory.routeName:(context) => MomHistory(),
+    PrivateChatWithDoc.routeName: (context) {
+      final chatRoom = ModalRoute.of(context)!.settings.arguments as ChatRoomModel;
+      return PrivateChatWithDoc(chatRoom: chatRoom,);
+    },
+    PrivateChatWithMom.routeName: (context) {
+      final chatRoom = ModalRoute.of(context)!.settings.arguments as ChatRoomModel;
+      return PrivateChatWithMom(chatRoom: chatRoom,);
+    },
   };
+
 }

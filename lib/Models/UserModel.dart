@@ -11,7 +11,7 @@ class UserModel {
     required this.governorate,required this.role,required this.phone}
       );
 
-  // to send to api
+
   Map<String, dynamic> toJson() {
     return {
       "userName": userName,
@@ -22,7 +22,7 @@ class UserModel {
     };
   }
 
-  // to receive from api
+
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
        userName: json["userName"],

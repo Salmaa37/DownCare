@@ -1,7 +1,7 @@
-import 'package:downcare/Screens/DoctorDemo/ChatRooms.dart';
-import 'package:downcare/Screens/DoctorDemo/DoctorArticle.dart';
+import 'package:downcare/Screens/DoctorDemo/DoctorChats/ChatRooms.dart';
+import 'package:downcare/Screens/DoctorDemo/DoctorArticles/DoctorArticle.dart';
 import 'package:downcare/Screens/DoctorDemo/DoctorSection.dart';
-import 'package:downcare/Screens/MomDemo/MomSection/DoctorChat.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';

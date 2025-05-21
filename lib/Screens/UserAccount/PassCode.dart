@@ -1,16 +1,34 @@
-import 'package:downcare/Apis/ApiManager.dart';
+import 'package:downcare/Apis/Account/AccountApis.dart';
 import 'package:downcare/Models/PassModel.dart';
-import 'package:downcare/ReusableComponents/AppButton.dart';
+import 'package:downcare/Modules/AppButton.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import '../../ReusableComponents/Alert.dart';
 import '../../utils/AppImages.dart';
 import '../../utils/Colors.dart';
 import 'ResetPass.dart';
-class PassCode extends StatelessWidget {
-  var codecontroller =TextEditingController();
+class PassCode extends StatefulWidget {
   static const String routeName="code";
    PassCode({super.key});
+
+  @override
+  State<PassCode> createState() => _PassCodeState();
+}
+
+class _PassCodeState extends State<PassCode> {
+  var codecontroller =TextEditingController();
+  void showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(top: 5.h, left: 2.w, right: 2.w),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     var email = (ModalRoute.of(context)?.settings.arguments as String?) ?? "";
@@ -89,11 +107,9 @@ class PassCode extends StatelessWidget {
                     bottom: MediaQuery.viewInsetsOf(context).bottom
                 ),
                 child: AppButton(txt: "Confirm", onclick: (){
-                  ApiManager.code(
+                  AccountApis.code(
                       onError: (e) {
-                        showDialog(context: context, builder:(context) {
-                          return Alert(txt: "$e",title: "Error!",titleColor: Colors.red,);
-                        },);
+                        showErrorMessage(e);
                       },
                       email, codecontroller.text, onSuccess: (){
                     PassModel passmodel =PassModel(email, codecontroller.text);

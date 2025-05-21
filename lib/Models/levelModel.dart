@@ -1,21 +1,23 @@
 import 'package:sizer/sizer.dart';
 
 class LevelModel {
-  String txt;
-  String img;
-  double width;
-  String? type;
+  final String txt;
+  final String img;
+  final double width;
+  final String? level;
 
-  LevelModel({required this.txt,required this.img,required this.width,
-    this.type });
+  LevelModel({
+    required this.txt,
+    required this.img,
+    required this.width,
+    this.level,
+  });
 
-  static List<LevelModel>getlevelmodel(){
-    return [
-      LevelModel(txt: "ONE WORD", img: "assets/images/one.png",width: 23.w,type:"OneWord" as String?),
-      LevelModel(txt: "TWO WORDS", img: "assets/images/two.png",width: 23.w,type:"TwoWord" as String ?),
-      LevelModel(txt: "THREE WORDS", img: "assets/images/three.png",width: 23.w,type:"ThreeWord" as String ?),
-      LevelModel(txt: "FOUR WORDS", img: "assets/images/four.png",width: 23.w,type:"FourWord" as String ?),
-      LevelModel(txt: "FIVE WORDS", img: "assets/images/five.png",width: 23.w,type:"FiveWord" as String ?)
-    ];
-  }
+  static List<LevelModel> getLevelModel() => [
+    LevelModel(txt: "ONE WORD",   img: "assets/images/one.png",   width: 23.w, level: "OneWord"),
+    LevelModel(txt: "TWO WORDS",  img: "assets/images/two.png",   width: 23.w, level: "TwoWord"),
+    LevelModel(txt: "THREE WORDS",img: "assets/images/three.png", width: 23.w, level: "ThreeWord"),
+    LevelModel(txt: "FOUR WORDS", img: "assets/images/four.png",  width: 23.w, level: "FourWord"),
+    LevelModel(txt: "FIVE WORDS", img: "assets/images/five.png",  width: 23.w, level: "FiveWord"),
+  ];
 }

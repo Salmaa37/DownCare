@@ -45,5 +45,14 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+
+		<!-- أذونات المايكروفون -->
+		<key>NSMicrophoneUsageDescription</key>
+		<string>We need access to the microphone</string>
+
+		<!-- أذونات التعرف على الصوت -->
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<string>We need access to speech recognition</string>
+
 	</dict>
 </plist>

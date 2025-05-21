@@ -12,7 +12,7 @@ class LoginUserModel {
   factory LoginUserModel.fromJson(Map<String, dynamic> json) {
     return LoginUserModel(
       imagePath: json["imagePath"] as String?,
-      bio: json["bio"] as String?,
+      bio: json["specialization"] as String?,
       userName: json["name"] ,
       email: json["email"] ,
       phone: json["phone"] ,

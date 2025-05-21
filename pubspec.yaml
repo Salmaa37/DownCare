@@ -41,11 +41,16 @@ dependencies:
   step_progress_indicator: ^1.0.2
 #  web_socket_channel: ^2.4.3
   shared_preferences: ^2.5.2
-# signalr_netcore: ^1.2.8
+ # signalr_netcore: ^1.2.8
   web_socket_channel: ^2.4.3
-  signalr_netcore: ^1.3.7
+  signalr_netcore: ^0.1.7+2-nullsafety.3
   image_picker: ^1.1.2
   audioplayers: ^6.4.0
+  speech_to_text: ^6.6.2
+  web_socket_client: ^0.2.0
+  dart_levenshtein: ^1.0.1
+  intl: ^0.20.2
+  url_launcher: ^6.3.1
 #  signalr_core: ^1.2.8
 
 

@@ -12,7 +12,7 @@ class DoctorSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(20),
-      height: 35.h,
+      height: 38.h,
       width: double.infinity,
       decoration: BoxDecoration(
           boxShadow: [

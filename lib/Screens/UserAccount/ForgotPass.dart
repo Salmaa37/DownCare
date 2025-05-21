@@ -1,21 +1,35 @@
 
-import 'package:downcare/Apis/ApiManager.dart';
-import 'package:downcare/ReusableComponents/AppButton.dart';
-
+import 'package:downcare/Apis/Account/AccountApis.dart';
+import 'package:downcare/Modules/AppButton.dart';
 import 'package:downcare/utils/AppImages.dart';
 import 'package:downcare/utils/Colors.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-
-import '../../ReusableComponents/Alert.dart';
 import 'PassCode.dart';
-
-
-class ForgotPass extends StatelessWidget {
-  var emailcontroller=TextEditingController();
+class ForgotPass extends StatefulWidget {
   static const String routeName="forgot pass";
   ForgotPass({super.key});
+
+  @override
+  State<ForgotPass> createState() => _ForgotPassState();
+}
+
+class _ForgotPassState extends State<ForgotPass> {
+  var emailcontroller=TextEditingController();
+
+  void showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(top: 5.h, left: 2.w, right: 2.w),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,11 +107,9 @@ class ForgotPass extends StatelessWidget {
                       bottom: MediaQuery.viewInsetsOf(context).bottom
                   ),
                   child:AppButton(txt: "Send reset password", onclick: (){
-                    ApiManager.forgetpass(
+                    AccountApis.forgetpass(
                         onError: (e) {
-                          showDialog(context: context, builder: (context) {
-                            return Alert(txt: "$e",title: "Error!",titleColor: Colors.red,);
-                          },);
+                         showErrorMessage(e);
                         },
                         emailcontroller.text, onSuccess: (){
                       showDialog(context: context, builder: (context) => AlertDialog(
@@ -115,12 +127,12 @@ class ForgotPass extends StatelessWidget {
                           ElevatedButton(
                             onPressed: (){
                               Navigator.pushReplacementNamed(context, PassCode.routeName, arguments:emailcontroller.text);
-                            }, child: Text("Ok",style: TextStyle(
+                            },style: ElevatedButton.styleFrom(
+                              backgroundColor: Colours.primaryblue
+                          ), child: Text("Ok",style: TextStyle(
                               color: Colors.white,
                               fontSize: 16.sp
-                          ),),style: ElevatedButton.styleFrom(
-                              backgroundColor: Colours.primaryblue
-                          ),
+                          ),),
                           )
                         ],
                       ),);

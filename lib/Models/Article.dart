@@ -1,23 +1,29 @@
 class ArticleModel {
-  String email;
+  String userName;
+  String imageUrl;
   String content;
   DateTime date;
 
-  ArticleModel({required this.email, required this.content,required this.date});
+
+  ArticleModel({required this.userName,
+    required this.imageUrl,
+    required this.content,
+    required this.date
+  });
 
   Map<String, dynamic> toJson() {
     return {
       "dateTime":date,
-      "email": email,
+      "name": userName,
       "content": content,
-
+      "imageUrl":imageUrl
     };
   }
-
   factory ArticleModel.fromJson(Map<String, dynamic> json) {
     return ArticleModel(
       date: DateTime.parse(json['dateTime']),
-      email: json["email"],
+      userName: json["name"],
+      imageUrl: json['imageUrl'],
       content: json["content"],
     );
   }

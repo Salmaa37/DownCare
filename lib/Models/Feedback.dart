@@ -1,24 +1,29 @@
 class FeedbackModel {
-  String email;
+  String userName;
+  String imageUrl;
   String content;
   DateTime date;
 
 
-  FeedbackModel({required this.email, required this.content,
+  FeedbackModel({required this.userName,
+    required this.imageUrl,
+    required this.content,
     required this.date
     });
 
   Map<String, dynamic> toJson() {
     return {
        "dateTime":date,
-      "email": email,
+      "name": userName,
       "content": content,
+      "imageUrl":imageUrl
     };
   }
   factory FeedbackModel.fromJson(Map<String, dynamic> json) {
     return FeedbackModel(
       date: DateTime.parse(json['dateTime']),
-        email: json["email"],
+        userName: json["name"],
+        imageUrl: json['imageUrl'],
         content: json["content"],
     );
   }

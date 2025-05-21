@@ -4,17 +4,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import '../../../Apis/SignalRService.dart';
-import 'AboutDown.dart';
-import 'Article.dart';
-import 'MomChat.dart';
-import 'Search.dart';
+import 'AboutDown/AboutDown.dart';
+import 'DoctorsArticles/Article.dart';
+import 'ChatRoomWithMoms/MomChat.dart';
+import 'ChatRoomWithDoctors/Search.dart';
 class MomSection extends StatefulWidget {
   static const String routeName = "momsection";
   MomSection({super.key});
   @override
   State<MomSection> createState() => _MomSectionState();
 }
-  class _MomSectionState extends State<MomSection> {
+class _MomSectionState extends State<MomSection> {
   final SignalRService _signalRService = SignalRService();
   List<String> texts = [
     "Read more info about down",
@@ -111,15 +111,22 @@ class MomSection extends StatefulWidget {
                         onPressed: () async {
                           if (index == 0) {
                             Navigator.pushNamed(context, AboutDown.routeName);
-                          } else if (index == 1) {
+                          }
+                          else if (index == 1) {
+                            print(" Checking connection");
                             if (!_signalRService.isConnected) {
                               await _signalRService.connect();
                             }
+                            print(" Connected: \${_signalRService.isConnected}");
+                            if (_signalRService.isConnected) {
+                              _signalRService.joinGroup();
 
-                            await _signalRService.joinGroup();
-                             _signalRService.listenForUserJoined();
-                            Navigator.pushNamed(context, Momchat.routeName);
-                          } else if (index == 2) {
+                              Navigator.pushReplacementNamed(context, Momchat.routeName);
+                            } else {
+                              print(" الاتصال فشل");
+                            }
+                          }
+                          else if (index == 2) {
                             Navigator.pushNamed(context, DoctorSearchScreen.routeName);
                           } else if (index == 3) {
                             Navigator.pushNamed(context, Article.routeName);
@@ -144,4 +151,3 @@ class MomSection extends StatefulWidget {
     );
   }
 }
-

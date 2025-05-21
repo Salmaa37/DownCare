@@ -1,10 +1,10 @@
-import 'package:downcare/Screens/DoctorDemo/ChangeDoctorPass.dart';
-import 'package:downcare/Screens/DoctorDemo/DoctorProfile.dart';
-import 'package:downcare/Screens/DoctorDemo/SettingsCard.dart';
+import 'package:downcare/Screens/DoctorDemo/DoctorAccount/ChangeDoctorPass.dart';
+import 'package:downcare/Screens/DoctorDemo/DoctorAccount/DoctorProfile.dart';
 import 'package:downcare/Screens/UserAccount/Login.dart';
 import 'package:downcare/utils/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import '../../../Modules/SettingsCard.dart';
 class DoctorSettings extends StatelessWidget {
   const DoctorSettings({super.key});
   @override

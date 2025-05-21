@@ -1,12 +1,11 @@
-import 'package:downcare/Apis/ApiManager.dart';
+import 'package:downcare/Apis/Account/AccountApis.dart';
 import 'package:downcare/Models/PassModel.dart';
-import 'package:downcare/ReusableComponents/AppButton.dart';
+import 'package:downcare/Modules/AppButton.dart';
 import 'package:downcare/utils/AppImages.dart';
 import 'package:downcare/utils/Colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import '../../ReusableComponents/Alert.dart';
 import 'Login.dart';
 class ResetPass extends StatefulWidget {
   static const String routeName="reset pass";
@@ -18,6 +17,32 @@ class _ResetPassState extends State<ResetPass> {
   bool secure = true;
   var passcontroller =TextEditingController();
   var confirmpasscontroller =TextEditingController();
+  void showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(top: 5.h, left: 2.w, right: 2.w),
+      ),
+    );
+  }
+  void showSuccessMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+        ),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(top: 5.h, left: 2.w, right: 2.w),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     var model =(ModalRoute.of(context)?.settings.arguments as PassModel?)??null ;
@@ -140,13 +165,12 @@ class _ResetPassState extends State<ResetPass> {
                   bottom: MediaQuery.viewInsetsOf(context).bottom
               ),
               child: AppButton(txt: "Reset Password", onclick: (){
-                ApiManager.resetpass(
+                AccountApis.resetpass(
                     onError: (e) {
-                      showDialog(context: context, builder: (context) {
-                        return Alert(txt: "$e",title: "Error!",titleColor: Colors.red,);
-                      });
+                      showErrorMessage(e);
                     },
                     model?.email??"", model?.code??"", passcontroller.text, confirmpasscontroller.text, onSuccess: (){
+                      showSuccessMessage("You Password Reset Successfully !");
                   Navigator.pushNamed(context,Login.routeName);
                 });
               }, colorbtn: Colours.primaryyellow),
