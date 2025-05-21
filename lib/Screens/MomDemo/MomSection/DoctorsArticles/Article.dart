@@ -2,11 +2,9 @@ import 'package:downcare/Apis/Article/ArticleApis.dart';
 import 'package:downcare/utils/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-
 class Article extends StatelessWidget {
   static const String routeName = "article";
   const Article({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +57,7 @@ class Article extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      /// الصورة والاسم
+
                       Row(
                         children: [
                           CircleAvatar(
@@ -92,7 +90,7 @@ class Article extends StatelessWidget {
                       ),
                       SizedBox(height: 2.h),
 
-                      /// المحتوى
+
                       Text(
                         article.content,
                         style: TextStyle(
@@ -103,7 +101,7 @@ class Article extends StatelessWidget {
                       ),
                       SizedBox(height: 2.h),
 
-                      /// التاريخ
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
