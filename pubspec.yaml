@@ -42,11 +42,11 @@ dependencies:
 #  web_socket_channel: ^2.4.3
   shared_preferences: ^2.5.2
  # signalr_netcore: ^1.2.8
-  web_socket_channel: ^2.4.3
+  web_socket_channel: ^3.0.3
   signalr_netcore: ^0.1.7+2-nullsafety.3
   image_picker: ^1.1.2
   audioplayers: ^6.4.0
-  speech_to_text: ^6.6.2
+  speech_to_text: ^7.0.0
   web_socket_client: ^0.2.0
   dart_levenshtein: ^1.0.1
   intl: ^0.20.2
