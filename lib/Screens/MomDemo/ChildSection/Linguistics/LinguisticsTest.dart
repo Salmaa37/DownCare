@@ -174,6 +174,7 @@ class _LinguisticsTestState extends State<LinguisticsTest> {
                             ),
                             child: Center(
                               child: Text(
+                                textAlign: TextAlign.center,
                                 currentQuestion.choices[index] ?? "",
                                 style: TextStyle(fontSize: 18.sp),
                               ),
@@ -203,8 +204,8 @@ class _LinguisticsTestState extends State<LinguisticsTest> {
                 } else {
 
                   final prefs = await SharedPreferences.getInstance();
-                  await prefs.setBool('test_done_$level', true);
-                  await prefs.setInt('score_$level', score);
+                  await prefs.setBool('test_done_${type}_$level', true);
+                  await prefs.setInt('score_${type}_$level', score);
 
                   Navigator.pushReplacementNamed(
                     context,

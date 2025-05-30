@@ -7,15 +7,12 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'dart:async';
 import '../../../../utils/Colors.dart';
-
 class LevelTest extends StatefulWidget {
   static const String routeName = "level test";
   const LevelTest({super.key});
-
   @override
   State<LevelTest> createState() => _LevelTestState();
 }
-
 class _LevelTestState extends State<LevelTest> {
   int selectedIndex = 0;
   int score = 0;
@@ -39,7 +36,9 @@ class _LevelTestState extends State<LevelTest> {
 
   void _initializeSpeech() async {
     bool available = await _speech.initialize();
-    if (!available) print("Speech recognition not available");
+    if (!available) {
+      print("Speech recognition not available");
+    }
   }
 
   void _startListening() async {
@@ -50,23 +49,25 @@ class _LevelTestState extends State<LevelTest> {
         _feedbackMessage = 'Listening...';
       });
       await _speech.listen(onResult: (result) {
-        setState(() => _spokenText = result.recognizedWords);
+        setState(() {
+          _spokenText = result.recognizedWords;
+        });
         _resetSilenceTimer();
       });
     }
   }
-
   void _stopListening() async {
     if (_isListening) {
       await _speech.stop();
-      setState(() => _isListening = false);
+      setState(() {
+        _isListening = false;
+      });
       _checkAnswer();
     }
   }
-
   void _resetSilenceTimer() {
     _silenceTimer?.cancel();
-    _silenceTimer = Timer(Duration(seconds: 1), () {
+    _silenceTimer = Timer(const Duration(seconds: 1), () {
       if (_isListening) {
         _stopListening();
       }
@@ -140,6 +141,7 @@ class _LevelTestState extends State<LevelTest> {
     var data = await ChildApis.fetchQuestions(level);
     setState(() {
       testData = data;
+      progressPercent = 1 / (data.length);
     });
   }
 
@@ -151,7 +153,6 @@ class _LevelTestState extends State<LevelTest> {
     level = args["level"]!;
     loadData();
   }
-
   void _resetState({bool keepIndex = true}) {
     setState(() {
       _spokenText = "";
@@ -161,159 +162,183 @@ class _LevelTestState extends State<LevelTest> {
       if (!keepIndex) selectedIndex = 0;
     });
   }
+  void _nextQuestion() async {
+    if (selectedIndex < testData!.length - 1) {
+      setState(() {
+        selectedIndex++;
+        progressPercent = (selectedIndex + 1) / testData!.length;
+      });
+      _resetState();
+    } else {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('test_done_${type}_$level', true);
+      await prefs.setInt('score_${type}_$level', score);
+      bool apiResult = await ChildApis.updateScore(
+        type: type,
+        level: level,
+        score: score,
+      );
+      if (apiResult) {
+        print("Score sent successfully");
+      } else {
+        print("Failed to send score");
+      }
 
+
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(
+        context,
+        TestResult.routeName,
+        arguments: {
+          "score": score.toString(),
+          "level": level,
+          "type": type,
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _silenceTimer?.cancel();
+    _speech.stop();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     if (testData == null) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(
+        appBar: AppBar(title: const Text("Level Test")),
+        body: const Center(child: CircularProgressIndicator()),
+      );
     }
     final current = testData![selectedIndex];
-
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text("Time to test")),
+      appBar: AppBar(title: const Text("Time to test")),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-          SizedBox(height: 2.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: StepProgressIndicator(
-                  totalSteps: 100,
-                  currentStep: (progressPercent * 100).toInt(),
-                  size: 5.w,
-                  padding: 0,
-                  selectedColor: Colours.primaryblue,
-                  unselectedColor: Colours.primarygrey,
-                  roundedEdges: Radius.circular(20),
-                ),
-              ),
-              SizedBox(width: 2.w),
-              Text(
-                "${(progressPercent * 100).toInt()}%",
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  color: Colours.primaryblue,
-                ),
-              )
-            ],
-          ),
-          SizedBox(height: 2.h),
-          Center(child: Image.network(current.imagePath ?? "",
-              width: 45.w)),
-          SizedBox(height: 3.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 2.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-            Text(
-              "Make your child say (${current.correctAnswer})",
-              style: TextStyle(color: Colours.primaryblue, fontSize: 17.sp),
-            ),
-            GestureDetector(
-              onTap: () {
-                if (!_hasStartedListening) {
-                  _startListening();
-                }
-              },
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  width: _isListening ? 9.w : 8.w,
-                  height: _isListening ? 9.w : 8.w,
-                  decoration: BoxDecoration(
-                    color: _isListening ? Colors.red : Colours.primaryblue,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: (_isListening ? Colors.red : Colours.primaryblue).withOpacity(0.6),
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                      ),
-                    ],
+                Expanded(
+                  child: StepProgressIndicator(
+                    totalSteps: 100,
+                    currentStep: (progressPercent * 100).toInt(),
+                    size: 5.w,
+                    padding: 0,
+                    selectedColor: Colours.primaryblue,
+                    unselectedColor: Colours.primarygrey,
+                    roundedEdges: const Radius.circular(20),
                   ),
-                  child: Center(
-                    child: Icon(
-                      _isListening ? Icons.mic_off : Icons.mic,
-                      color: Colors.white,
-                      size: 6.w,
+                ),
+                SizedBox(width: 2.w),
+                Text(
+                  "${(progressPercent * 100).toInt()}%",
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    color: Colours.primaryblue,
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 2.h),
+            Center(
+              child: current.imagePath != null && current.imagePath.isNotEmpty
+                  ? Image.network(current.imagePath, width: 45.w)
+                  : Container(),
+            ),
+            SizedBox(height: 3.h),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    "Make your child say (${current.correctAnswer})",
+                    style: TextStyle(
+                      color: Colours.primaryblue,
+                      fontSize: 17.sp,
                     ),
                   ),
                 ),
-              ),
+                GestureDetector(
+                  onTap: () {
+                    if (!_hasStartedListening) {
+                      _startListening();
+                    }
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    width: _isListening ? 9.w : 8.w,
+                    height: _isListening ? 9.w : 8.w,
+                    decoration: BoxDecoration(
+                      color: _isListening ? Colors.red : Colours.primaryblue,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: (_isListening ? Colors.red : Colours.primaryblue).withOpacity(0.6),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Icon(
+                        _isListening ? Icons.mic_off : Icons.mic,
+                        color: Colors.white,
+                        size: 6.w,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ]),
-          SizedBox(height: 2.h),
-          Text(
-            _spokenText.isEmpty
-                ? "Waiting for your answer..."
-                : "You said: $_spokenText",
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.bold,
-              color: Colours.primaryblue,
+            SizedBox(height: 2.h),
+            Text(
+              _spokenText.isEmpty ? "Waiting for response ..." : _spokenText,
+              style: TextStyle(fontSize: 18.sp, color: Colours.primaryblue),
             ),
-          ),
-          SizedBox(height: 2.h),
-          if (_feedbackMessage.isNotEmpty)
+            SizedBox(height: 1.h),
             Text(
               _feedbackMessage,
               style: TextStyle(
                 fontSize: 18.sp,
-                color: _feedbackMessage.startsWith('✅')
-                    ? Colors.green
-                    : Colors.red,
+                color: _feedbackMessage.contains('✅') ? Colors.green : Colors.red,
               ),
             ),
-        ]),
-      ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 5.w),
-        child: Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () async {
-                  _resetState();
-                  if (selectedIndex < testData!.length - 1) {
-                    setState(() {
-                      selectedIndex++;
-                      progressPercent = (selectedIndex + 1) / testData!.length;
-                    });
-                  } else {
-                    // حفظ حالة الامتحان والسكور
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.setBool('test_done_$level', true);
-                    await prefs.setInt('score_$level', score);
-
-                    Navigator.pushReplacementNamed(
-                      context,
-                      TestResult.routeName,
-                      arguments: {
-                        "type": type,
-                        "level": level,
-                        "score": score.toString(),
-                      },
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colours.primaryyellow),
-                child: Text(
-                  selectedIndex < testData!.length - 1 ? "Next" : "Finish",
-                  style: TextStyle(
-                    color: Colours.primaryblue,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w500,
+            const Spacer(),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                              backgroundColor: Colours.primaryblue,
+                                padding:
+                                EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 10.w),
+                              ),
+                    onPressed: _isListening
+                        ? null
+                        : () {
+                      if (_spokenText.isEmpty && !_hasStartedListening) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Please tap the mic and speak')),
+                        );
+                        return;
+                      }
+                      _nextQuestion();
+                    },
+                    child: Text(selectedIndex == testData!.length - 1 ? "Finish" : "Next",style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp
+                    ),),
                   ),
                 ),
-              ),
+              ],
             ),
           ],
         ),

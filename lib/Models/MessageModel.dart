@@ -15,9 +15,9 @@ class MessageModel {
   });
   factory MessageModel.fromJson(Map<String, dynamic> json) {
     return MessageModel(
-      messageId: json["id"] is int
-          ? json["id"]
-          : int.tryParse(json["id"]?.toString() ?? '0') ?? 0,
+      messageId: json["messageId"] is int
+          ? json["messageId"]
+          : int.tryParse(json["messageId"]?.toString() ?? '0') ?? 0,
       message: json['message']?.toString() ?? '',
       dateTime: json['dateTime']?.toString() ?? DateTime.now().toString(),
       displayTime: json['displayTime']?.toString() ?? '',
@@ -27,6 +27,6 @@ class MessageModel {
   }
   @override
   String toString() {
-    return 'MessageModel{id: $messageId, message: $message, user: $userName, image: $userImageURL}';
+    return 'MessageModel{messageId: $messageId, message: $message, user: $userName, image: $userImageURL}';
   }
 }

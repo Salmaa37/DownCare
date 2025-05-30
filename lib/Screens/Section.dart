@@ -10,7 +10,6 @@ class Section extends StatefulWidget {
   String text;
   String img;
    Section({super.key,required this.text,required this.img});
-
   @override
   State<Section> createState() => _SectionState();
 }

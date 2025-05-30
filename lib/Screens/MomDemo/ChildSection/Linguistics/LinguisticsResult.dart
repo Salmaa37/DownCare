@@ -44,7 +44,7 @@ class LinguisticsResult extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Your Child Score"),
+        title: const Text("Your child Score"),
       ),
       body: SingleChildScrollView(
         child: Center(

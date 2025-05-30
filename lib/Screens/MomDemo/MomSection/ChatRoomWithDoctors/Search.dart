@@ -177,7 +177,7 @@ class _DoctorSearchScreenState extends State<DoctorSearchScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Dr. ${doctor.name}",
+                              " ${doctor.name}",
                               style: TextStyle(
                                 color: Colours.primaryblue,
                                 fontSize: 16.sp,

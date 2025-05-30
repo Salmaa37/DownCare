@@ -145,9 +145,6 @@ class _DoctorChatState extends State<DoctorChat> {
         _isLoading = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to load messages!")),
-      );
     }
   }
 

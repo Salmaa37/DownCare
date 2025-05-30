@@ -26,6 +26,9 @@ class TxtField extends StatelessWidget {
           color: cardcolor
       ),
       child: TextField(
+        cursorColor: Colors.white,
+        cursorWidth: 1.0,
+        cursorHeight: 25.0,
         style: TextStyle(
           color: stylecolor
         ),

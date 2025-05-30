@@ -77,6 +77,9 @@ class SignupFormFields extends StatelessWidget {
       ),
       padding: EdgeInsets.symmetric(horizontal: 2.w),
       child: TextFormField(
+        cursorColor: Colors.white,
+        cursorWidth: 1.0,
+        cursorHeight: 25.0,
         obscureText: secure,
         style: TextStyle(fontSize: 16.sp, color: Colors.white),
         controller: controller,

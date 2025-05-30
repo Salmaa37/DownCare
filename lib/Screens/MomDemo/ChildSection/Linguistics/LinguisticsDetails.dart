@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:downcare/Apis/Child/ChildApis.dart';
 import 'package:downcare/Models/LinguisticsSectionModel.dart';
 import 'package:downcare/Modules/BackAndNextBtn.dart';
@@ -66,9 +67,7 @@ class _LinguisticsDetailsState extends State<LinguisticsDetails> {
             body: Center(child: CircularProgressIndicator()),
           );
         }
-
         data = snapshot.data!;
-
         return Scaffold(
           appBar: AppBar(title: Text('$type - ${data[selectedIndex].type}')),
           backgroundColor: Colors.white,
@@ -84,9 +83,11 @@ class _LinguisticsDetailsState extends State<LinguisticsDetails> {
                         color: Colours.primaryblue, fontSize: 18.sp),
                   ),
                   Center(
-                    child: Image.network(
-                      data[selectedIndex].imgPath ?? '',
+                    child: CachedNetworkImage(
+                      imageUrl: data[selectedIndex].imgPath ?? '',
                       width: 50.w,
+                      placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
                   Center(

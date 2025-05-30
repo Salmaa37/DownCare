@@ -51,12 +51,21 @@ class _ProfileState extends State<DoctorProfile> {
                     child: CircleAvatar(
                       radius: 80,
                       backgroundColor: Colours.primaryblue,
-                      child: Text(
-                        loginUserModel?.userName?.isNotEmpty == true
-                            ? loginUserModel!.userName![0].toUpperCase()
+                      backgroundImage: (loginUserModel?.imagePath != null && loginUserModel!.imagePath!.isNotEmpty)
+                          ? NetworkImage(loginUserModel!.imagePath!)
+                          : null,
+                      child: (loginUserModel?.imagePath == null || loginUserModel!.imagePath!.isEmpty)
+                          ? Text(
+                        loginUserModel?.userName.isNotEmpty == true
+                            ? loginUserModel!.userName[0].toUpperCase()
                             : "A",
-                        style: TextStyle(fontSize: 25.sp, color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
+                        style: TextStyle(
+                          fontSize: 25.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                          : null,
                     ),
                   ),
                   Text("Username", style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp)),

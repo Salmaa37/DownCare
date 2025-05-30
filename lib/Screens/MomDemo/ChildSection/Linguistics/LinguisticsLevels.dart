@@ -5,19 +5,14 @@ import 'package:downcare/Screens/MomDemo/ChildSection/Linguistics/LinguisticsTes
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../Models/levelModel.dart';
-
 class LinguisticsLevels extends StatelessWidget {
   static const String routeName = "linguistics";
-
   final List<LevelModel> l = LevelModel.getLevelModel();
-
   LinguisticsLevels({super.key});
-
   @override
   Widget build(BuildContext context) {
     final Map<String, String?> args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
     final String type = args['type']!;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Linguistics Levels"),
@@ -43,8 +38,7 @@ class LinguisticsLevels extends StatelessWidget {
               testOnclick: () async {
                 final prefs = await SharedPreferences.getInstance();
                 final hasTakenTest =
-                    prefs.getBool('test_done_${l[index].level}') ?? false;
-
+                    prefs.getBool('test_done_${type}_${l[index].level}') ?? false;
                 if (hasTakenTest) {
                   Navigator.pushNamed(
                     context,
@@ -53,13 +47,13 @@ class LinguisticsLevels extends StatelessWidget {
                       "type": type,
                       "level": l[index].level,
                       "score": prefs
-                          .getInt('score_${l[index].level}')
+                          .getInt('score_${type}_${l[index].level}')
                           ?.toString() ??
-                          "0",
+                          " ",
                     },
                   );
                 } else {
-                  Navigator.pushReplacementNamed(
+                  Navigator.pushNamed(
                     context,
                     LinguisticsTest.routeName,
                     arguments: {

@@ -1,20 +1,17 @@
-import 'dart:ui';
-import 'package:downcare/Apis/Child/ChildApis.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
-
 import '../../../../utils/Colors.dart';
+import 'package:downcare/Apis/Child/ChildApis.dart';
 
 class TestResult extends StatelessWidget {
   static const String routeName = "test result";
 
-  TestResult({Key? key}) : super(key: key);
+  const TestResult({Key? key}) : super(key: key);
 
-  Future<void> sendResultToApi(int score, String level) async {
+  Future<void> sendResultToApi(int score, String level, String type) async {
     bool result = await ChildApis.updateScore(
-      type: "communication",
+      type: type,
       level: level,
       score: score,
     );
@@ -27,17 +24,17 @@ class TestResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
-
-    final int score = int.tryParse(args["score"] ?? "0") ?? 0;
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    final int score = int.tryParse(args["score"]?.toString() ?? "0") ?? 0;
     final String level = args["level"] ?? "communication";
+    final String type = args["type"] ?? "communication";
 
-    Future.microtask(() {
-      sendResultToApi(score, level);
-    });
+    const int maxScore = 100; // 10 أسئلة * 10 درجات
 
-    int correctPercent = score;
-    int wrongPercent = 100 - score;
+    final int correctPercent = score.clamp(0, maxScore);
+    final int wrongPercent = maxScore - correctPercent;
+
+    Future.microtask(() => sendResultToApi(correctPercent, level, type));
 
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +50,7 @@ class TestResult extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                     CircularStepProgressIndicator(
-                      totalSteps: 100,
+                      totalSteps: maxScore,
                       currentStep: correctPercent,
                       stepSize: 10,
                       selectedColor: Colors.green,
@@ -67,7 +64,7 @@ class TestResult extends StatelessWidget {
                     Text(
                       "$correctPercent%",
                       style: TextStyle(
-                        color: score > 50 ? Colors.green : Colors.red,
+                        color: correctPercent > 50 ? Colors.green : Colors.red,
                         fontSize: 20.sp,
                       ),
                     ),
@@ -75,14 +72,14 @@ class TestResult extends StatelessWidget {
                 ),
                 SizedBox(height: 3.h),
                 Text(
-                  score > 50
+                  correctPercent > 50
                       ? "Congratulations to your child, they passed the test successfully."
                       : "Hard luck to your child! Try again.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16.sp,
                     height: 1.5,
-                    color: score > 50 ? Colors.green : Colors.red,
+                    color: correctPercent > 50 ? Colors.green : Colors.red,
                   ),
                 ),
                 SizedBox(height: 3.h),
@@ -101,7 +98,8 @@ class TestResult extends StatelessWidget {
                     border: Border.all(color: Colors.grey),
                   ),
                   child: Column(
-                    spacing: 1.h,
+                    spacing:1.5.h ,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,7 +112,7 @@ class TestResult extends StatelessWidget {
                         ],
                       ),
                       StepProgressIndicator(
-                        totalSteps: 100,
+                        totalSteps: maxScore,
                         currentStep: correctPercent,
                         size: 6.w,
                         padding: 0,
@@ -129,12 +127,12 @@ class TestResult extends StatelessWidget {
                           const Text("Wrong Answer "),
                           Text(
                             "$wrongPercent%",
-                            style: TextStyle(color: Color(0xffC23F33)),
+                            style: const TextStyle(color: Color(0xffC23F33)),
                           ),
                         ],
                       ),
                       StepProgressIndicator(
-                        totalSteps: 100,
+                        totalSteps: maxScore,
                         currentStep: wrongPercent,
                         size: 6.w,
                         padding: 0,

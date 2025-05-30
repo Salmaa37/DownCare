@@ -83,6 +83,9 @@ class _LoginState extends State<Login> {
                           color: Colours.primaryblue,
                           borderRadius: BorderRadius.circular(10)),
                       child: TextField(
+                        cursorColor: Colors.white,
+                        cursorWidth: 1.0,
+                        cursorHeight: 25.0,
                         style: TextStyle(color: Colors.white, fontSize: 16.sp),
                         controller: emailcontroller,
                         keyboardType: TextInputType.emailAddress,
@@ -103,6 +106,9 @@ class _LoginState extends State<Login> {
                           color: Colours.primaryblue,
                           borderRadius: BorderRadius.circular(10)),
                       child: TextField(
+                        cursorColor: Colors.white,
+                        cursorWidth: 1.0,
+                        cursorHeight: 25.0,
                         style: TextStyle(color: Colors.white, fontSize: 16.sp),
                         controller: passwordcontroller,
                         obscureText: secure,

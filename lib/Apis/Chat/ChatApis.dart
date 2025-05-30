@@ -41,10 +41,7 @@ class ChatApis{
 
     final response = await http.delete(
       url,
-      headers: {
-        'Content-Type': 'application/json',
 
-      },
     );
     if (response.statusCode == 200) {
       print('Message deleted successfully.');
@@ -53,7 +50,6 @@ class ChatApis{
       print('Response body: ${response.body}');
     }
   }
-
 
   static Future<List<ChatRoomModel>> fetchChatRooms() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

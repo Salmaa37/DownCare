@@ -5,15 +5,16 @@ import '../../../../Models/levelModel.dart';
 import 'LevelDetails.dart';
 import 'LevelTest.dart';
 import 'TestResult.dart';
+
 class SectionLevels extends StatelessWidget {
   static const String routeName = "section levels";
   final List<LevelModel> l = LevelModel.getLevelModel();
   SectionLevels({super.key});
+
   @override
   Widget build(BuildContext context) {
     final Map<String, String?> args = ModalRoute.of(context)!.settings.arguments as Map<String, String?>;
     final String type = args['type']!;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Communication Levels"),
@@ -38,7 +39,7 @@ class SectionLevels extends StatelessWidget {
               },
               testOnclick: () async {
                 final prefs = await SharedPreferences.getInstance();
-                final hasTakenTest = prefs.getBool('test_done_${l[index].level}') ?? false;
+                final hasTakenTest = prefs.getBool('test_done_${type}_${l[index].level}') ?? false;
                 if (hasTakenTest) {
                   Navigator.pushReplacementNamed(
                     context,
@@ -46,9 +47,7 @@ class SectionLevels extends StatelessWidget {
                     arguments: {
                       "type": type,
                       "level": l[index].level,
-                      "score": prefs
-                          .getInt('score_${l[index].level}')
-                          ?.toString() ?? "0",
+                      "score": prefs.getInt('score_${type}_${l[index].level}')?.toString() ?? "0",
                     },
                   );
                 } else {

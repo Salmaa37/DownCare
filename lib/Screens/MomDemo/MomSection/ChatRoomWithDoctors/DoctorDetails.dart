@@ -7,10 +7,9 @@ import '../../../../utils/Colors.dart';
 import 'DoctorChat.dart';
 
 class DoctorDetails extends StatelessWidget {
+
   static const String routeName = "doc details";
-
   const DoctorDetails({super.key});
-
   @override
   Widget build(BuildContext context) {
     var model = ModalRoute.of(context)?.settings.arguments as DocModel;
@@ -21,7 +20,7 @@ class DoctorDetails extends StatelessWidget {
         iconTheme: IconThemeData(color: Colours.primaryblue),
         backgroundColor: Colors.white,
         title: Text(
-          "Dr. ${model.name}",
+          " ${model.name}",
           style: TextStyle(color: Colours.primaryblue, fontSize: 18.sp),
         ),
       ),
@@ -93,7 +92,11 @@ class DoctorDetails extends StatelessWidget {
           title,
           style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp),
         ),
-        ProfileCard(label: value ?? "Not Available"),
+        ProfileCard(
+            label: (value == null || value.trim().isEmpty || value == "string")
+                ? "Not Available"
+                : value!
+        ),
         SizedBox(height: 1.h),
       ],
     );

@@ -51,6 +51,7 @@ dependencies:
   dart_levenshtein: ^1.0.1
   intl: ^0.20.2
   url_launcher: ^6.3.1
+  cached_network_image: ^3.4.0
 #  signalr_core: ^1.2.8
 
 

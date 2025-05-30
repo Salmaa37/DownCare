@@ -36,13 +36,40 @@ class DoctorSettings extends StatelessWidget {
                 textColor: Colours.primaryblue),
           ),
           GestureDetector(
-            onTap: (){
-              Navigator.pushNamed(context, Login.routeName);
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Confirm Logout"),
+                    content: Text("Are you sure you want to log out?"),
+                    actions: [
+                      TextButton(
+                        child: Text("Cancel",style: TextStyle(
+                          color: Colours.primaryblue
+                        ),),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: Text("Log Out", style: TextStyle(color: Colors.red)),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.pushNamed(context, Login.routeName);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
             },
-            child: SettingsCard(txt: "Log Out",
-                icon: Icons.logout,
-                iconColor: Colors.red,
-                textColor: Colors.red),
+            child: SettingsCard(
+              txt: "Log Out",
+              icon: Icons.logout,
+              iconColor: Colors.red,
+              textColor: Colors.red,
+            ),
           )
 
         ],

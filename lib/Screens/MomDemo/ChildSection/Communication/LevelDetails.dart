@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:downcare/Apis/Child/ChildApis.dart';
 import 'package:downcare/Modules/BackAndNextBtn.dart';
 import 'package:downcare/utils/Colors.dart';
@@ -173,16 +174,17 @@ class _LevelDetailsState extends State<LevelDetails> {
                         style: TextStyle(color: Colours.primaryblue, fontSize: 18.sp)),
                     SizedBox(height: 2.h),
                     Center(
-                      child: Image.network(
-                        data[selectedIndex].imgPath ?? "",
+                      child: CachedNetworkImage(
+                        imageUrl: data[selectedIndex].imgPath ?? '',
                         width: 50.w,
-                        errorBuilder: (context, error, stackTrace) =>
-                            Icon(Icons.broken_image, size: 50.w),
+                        placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                     ),
                     SizedBox(height: 2.h),
                     Center(
                       child: Text(
+                        textAlign: TextAlign.center,
                         data[selectedIndex].label ?? "No Label",
                         style: TextStyle(
                           color: Colours.primaryblue,

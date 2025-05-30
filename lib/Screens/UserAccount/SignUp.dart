@@ -151,7 +151,7 @@ class _SignUpState extends State<SignUp> {
                         phone: phoneController.text,
                       );
 
-                     AccountApis.signUpUser(
+                      AccountApis.signUpUser(
                         usermodel,
                         password: passwordController.text,
                         Confirmpassword: confirmPasswordController.text,

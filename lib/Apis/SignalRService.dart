@@ -39,9 +39,9 @@ class SignalRService {
           final Map<String, dynamic> messageData = Map<String, dynamic>.from(args.first);
 
           final messageModel = MessageModel(
-            messageId: messageData['id'] is int
-                ? messageData['id']
-                : int.tryParse(messageData['id']?.toString() ?? '0') ?? 0,
+            messageId: messageData['messageId'] is int
+                ? messageData['messageId']
+                : int.tryParse(messageData['messageId']?.toString() ?? '0') ?? 0,
             message: messageData['message']?.toString() ?? '',
             userName: messageData['userName']?.toString() ?? 'Unknown',
             userImageURL: messageData['userImage']?.toString() ?? '',
@@ -99,22 +99,20 @@ class SignalRService {
       try {
         if (args != null && args is List && args.isNotEmpty) {
           final data = args.first;
-          if (data is Map && data.containsKey('messageId')) {
-            final messageIdValue = data['messageId'];
-            final messageId = messageIdValue is int
-                ? messageIdValue
-                : int.tryParse(messageIdValue.toString()) ?? 0;
+          final messageId = data is int
+              ? data
+              : int.tryParse(data.toString()) ?? 0;
 
-            print("ID الرسالة المحذوفة: $messageId");
-            if (messageId != 0) {
-              onMessageDeleted?.call(messageId);
-            }
+          print("ID الرسالة المحذوفة: $messageId");
+          if (messageId != 0) {
+            onMessageDeleted?.call(messageId);
           }
         }
       } catch (e) {
         print("خطأ في MessageDeleted: $e");
       }
     });
+
 
 
 
@@ -127,9 +125,9 @@ class SignalRService {
           final Map<String, dynamic> messageData = Map<String, dynamic>.from(args.first);
 
           final messageModel = MessageModel(
-            messageId: messageData['id'] is int
-                ? messageData['id']
-                : int.tryParse(messageData['id']?.toString() ?? '0') ?? 0,
+            messageId: messageData['messageId'] is int
+                ? messageData['messageId']
+                : int.tryParse(messageData['messageId']?.toString() ?? '0') ?? 0,
             message: messageData['message']?.toString() ?? '',
             userName: messageData['userName']?.toString() ?? 'Unknown',
             userImageURL: messageData['userImage']?.toString() ?? '',
