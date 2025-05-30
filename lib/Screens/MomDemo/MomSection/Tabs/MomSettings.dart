@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import '../../../../utils/Colors.dart';
 import '../../../../Modules/SettingsCard.dart';
@@ -68,11 +69,19 @@ class MomSetting extends StatelessWidget {
                       ),
                       TextButton(
                         child: Text("Log Out", style: TextStyle(color: Colors.red)),
-                        onPressed: () {
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.remove('is_logged_in');
                           Navigator.of(context).pop();
-                          Navigator.pushNamed(context, Login.routeName);
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            Login.routeName,
+                                (route) => false,
+                          );
                         },
                       ),
+
+
                     ],
                   );
                 },
