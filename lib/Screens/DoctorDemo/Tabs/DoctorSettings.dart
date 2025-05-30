@@ -3,6 +3,7 @@ import 'package:downcare/Screens/DoctorDemo/DoctorAccount/DoctorProfile.dart';
 import 'package:downcare/Screens/UserAccount/Login.dart';
 import 'package:downcare/utils/Colors.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import '../../../Modules/SettingsCard.dart';
 class DoctorSettings extends StatelessWidget {
@@ -54,9 +55,15 @@ class DoctorSettings extends StatelessWidget {
                       ),
                       TextButton(
                         child: Text("Log Out", style: TextStyle(color: Colors.red)),
-                        onPressed: () {
+                   onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.remove('is_logged_in');
                           Navigator.of(context).pop();
-                          Navigator.pushNamed(context, Login.routeName);
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            Login.routeName,
+                                (route) => false,
+                          );
                         },
                       ),
                     ],

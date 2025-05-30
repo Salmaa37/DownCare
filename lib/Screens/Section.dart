@@ -59,11 +59,9 @@ class _SectionState extends State<Section> {
             } else if (widget.img == "childsection") {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               bool? isChildAdded = prefs.getBool("isChildAdded");
-
               String? childData = prefs.getString("childData");
               if (mounted) {
                 if (isChildAdded == true && childData != null && childData.isNotEmpty) {
-
                   Navigator.pushNamed(context, ChildSection.routeName);
                 } else {
                   Navigator.pushNamed(context, ChildData.routeName);
