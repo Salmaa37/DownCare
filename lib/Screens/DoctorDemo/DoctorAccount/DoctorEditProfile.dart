@@ -7,11 +7,9 @@ import '../../../Models/LoginUserModel.dart';
 import '../../../Modules/AppButton.dart';
 import '../../../utils/Colors.dart';
 import '../../../Modules/TxtField.dart';
-
 class DoctorEditProfile extends StatefulWidget {
   static const String routeName = "edit doctor profile";
   DoctorEditProfile({super.key});
-
   @override
   State<DoctorEditProfile> createState() => _EditProfileState();
 }

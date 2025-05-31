@@ -97,6 +97,9 @@ class _LoginState extends State<Login> {
                             hintText: "enter email"),
                       ),
                     ),
+                    SizedBox(
+                      height: 1.h,
+                    ),
                     Text("Password",
                         style: TextStyle(
                             fontSize: 17.sp, color: Colours.primaryblue)),

@@ -29,23 +29,6 @@ class _ChildSectionState extends State<ChildSection> {
     AppImages.skillsdeveloment,
   ];
 
-  List<bool> isVisible = [false, false, false];
-
-  @override
-  void initState() {
-    super.initState();
-    _showCardsSequentially();
-  }
-
-  void _showCardsSequentially() async {
-    for (int i = 0; i < isVisible.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      setState(() {
-        isVisible[i] = true;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,20 +48,22 @@ class _ChildSectionState extends State<ChildSection> {
         child: ListView.builder(
           itemCount: texts.length,
           itemBuilder: (context, index) {
-            return AnimatedOpacity(
-              duration: const Duration(seconds: 1),
-              opacity: isVisible[index] ? 1.0 : 0.0,
+            return TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0, end: 1),
+              duration: Duration(milliseconds: 700 + index * 150),
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value,
+                  child: Transform.translate(
+                    offset: Offset(0, (1 - value) * 30),
+                    child: child,
+                  ),
+                );
+              },
               child: Container(
                 padding: EdgeInsets.all(4.w),
                 margin: EdgeInsets.only(bottom: 2.h),
                 decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
                   color: Colours.primarygrey,
                   borderRadius: BorderRadius.circular(3.w),
                 ),

@@ -22,49 +22,62 @@ class SectionLevels extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: ListView.separated(
+          itemCount: l.length,
+          separatorBuilder: (context, index) => const Divider(),
           itemBuilder: (context, index) {
-            return Levelcard(
-              txt: l[index].txt,
-              img: l[index].img,
-              width: l[index].width,
-              onclick: () {
-                Navigator.pushNamed(
-                  context,
-                  LevelDetails.routeName,
-                  arguments: {
-                    "type": type,
-                    "level": l[index].level,
-                  },
+            return TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0, end: 1),
+              duration: Duration(milliseconds: 700 + index * 100),
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value,
+                  child: Transform.translate(
+                    offset: Offset(0, (1 - value) * 30),
+                    child: child,
+                  ),
                 );
               },
-              testOnclick: () async {
-                final prefs = await SharedPreferences.getInstance();
-                final hasTakenTest = prefs.getBool('test_done_${type}_${l[index].level}') ?? false;
-                if (hasTakenTest) {
+              child: Levelcard(
+                txt: l[index].txt,
+                img: l[index].img,
+                width: l[index].width,
+                onclick: () {
                   Navigator.pushNamed(
                     context,
-                    TestResult.routeName,
-                    arguments: {
-                      "type": type,
-                      "level": l[index].level,
-                      "score": prefs.getInt('score_${type}_${l[index].level}')?.toString() ?? "0",
-                    },
-                  );
-                } else {
-                  Navigator.pushNamed(
-                    context,
-                    LevelTest.routeName,
+                    LevelDetails.routeName,
                     arguments: {
                       "type": type,
                       "level": l[index].level,
                     },
                   );
-                }
-              },
+                },
+                testOnclick: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  final hasTakenTest = prefs.getBool('test_done_${type}_${l[index].level}') ?? false;
+                  if (hasTakenTest) {
+                    Navigator.pushNamed(
+                      context,
+                      TestResult.routeName,
+                      arguments: {
+                        "type": type,
+                        "level": l[index].level,
+                        "score": prefs.getInt('score_${type}_${l[index].level}')?.toString() ?? "0",
+                      },
+                    );
+                  } else {
+                    Navigator.pushNamed(
+                      context,
+                      LevelTest.routeName,
+                      arguments: {
+                        "type": type,
+                        "level": l[index].level,
+                      },
+                    );
+                  }
+                },
+              ),
             );
           },
-          separatorBuilder: (context, index) => const Divider(),
-          itemCount: l.length,
         ),
       ),
     );

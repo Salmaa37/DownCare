@@ -1,111 +1,108 @@
 import 'package:downcare/Models/QuestionModel.dart';
 import 'package:downcare/utils/Colors.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
+
 class AboutDown extends StatefulWidget {
   static const String routeName = "aboutdown";
   const AboutDown({super.key});
+
   @override
   State<AboutDown> createState() => _AboutDownState();
 }
+
 class _AboutDownState extends State<AboutDown> {
   List<QuestionModel> all = [];
   int currentIndex = 0;
+  PageController _pageController = PageController();
+
   @override
   void initState() {
     super.initState();
     loadfile();
   }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text(
-          "About Down",
-        ),
+        title: const Text("About Down"),
       ),
       body: all.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-            SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    all[currentIndex].title,
-                    style:  TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.sp,
-                    ),
-                  ),
-                   SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                  Text(
-                    all[currentIndex].answer.join("\n"),
-                    style:  TextStyle(
-                       height: 0.25.h,
-                      fontSize: 16.sp,
-                      color: Colours.primaryblue
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 1.h,
-                      horizontal: MediaQuery.of(context).size.width*0.1
-                    ),
-                    backgroundColor: Colours.primaryyellow
-                  ),
-                  onPressed: currentIndex > 0
-                      ? () {
-                    setState(() {
-                      currentIndex--;
-                    });
-                  }
-                      : null,
-                  child:  Text("Back",style: TextStyle(
-                    fontSize: 17.sp,
-                    color: Colours.primaryblue
-                  ),),
-                ),
-                ElevatedButton(
-                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                                vertical: 1.h,
-                                horizontal: MediaQuery.of(context).size.width * 0.1),
-                                backgroundColor: Colours.primaryyellow
-                       ),
-                        onPressed: currentIndex < all.length - 1
-                      ? () {
-                    setState(() {
-                      currentIndex++; // Show next question
-                    });
-                  }
-                      : null,
-                  child:  Text("Next",style: TextStyle(
-                    fontSize: 17.sp,
-                    color: Colours.primaryblue
-                  ),),
-                ),
-              ],
-            ),
-
-                    ],
-                  ),
+          : Column(
+        children: [
+          SizedBox(height: 2.h),
+          LinearProgressIndicator(
+            value: (currentIndex + 1) / all.length,
+            backgroundColor: Colours.primarygrey,
+            color: Colours.primaryyellow,
           ),
+          SizedBox(height: 2.h),
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
+              itemCount: all.length,
+              itemBuilder: (context, index) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                  padding: const EdgeInsets.all(12.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    elevation: 5,
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            all[index].title,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height *
+                                  0.03),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Text(
+                                all[index].answer.join("\n"),
+                                style: TextStyle(
+                                  height: 1.5,
+                                  fontSize: 16.sp,
+                                  color: Colours.primaryblue,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
