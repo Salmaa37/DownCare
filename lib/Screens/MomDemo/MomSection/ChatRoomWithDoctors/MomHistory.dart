@@ -93,7 +93,7 @@ class MomHistory extends StatelessWidget {
                       SizedBox(width: 4.w),
                       Expanded(
                         child: Text(
-                          "Dr.${room.name}",
+                          "${room.name}",
                           style: TextStyle(
                             color: Colours.primaryblue,
                             fontSize: 17.sp,

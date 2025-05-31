@@ -42,7 +42,10 @@ class DoctorSettings extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text("Confirm Logout"),
+                    title: Text("Confirm Logout",style: TextStyle(
+                      color: Colors.red,
+
+                    ),),
                     content: Text("Are you sure you want to log out?"),
                     actions: [
                       TextButton(

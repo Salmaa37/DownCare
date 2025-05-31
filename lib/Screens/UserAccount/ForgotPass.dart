@@ -76,6 +76,9 @@ class _ForgotPassState extends State<ForgotPass> {
                         color: Colours.primaryblue
                     ),
                     child: TextField(
+                      cursorColor: Colors.white,
+                      cursorWidth: 1.0,
+                      cursorHeight: 25.0,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.sp

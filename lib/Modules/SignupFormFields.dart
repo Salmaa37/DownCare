@@ -3,15 +3,13 @@ import 'package:sizer/sizer.dart';
 import '../../utils/Colors.dart';
 import 'TxtField.dart';
 
-class SignupFormFields extends StatelessWidget {
+class SignupFormFields extends StatefulWidget {
   final TextEditingController usernameController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
   final TextEditingController phoneController;
   final TextEditingController governorateController;
-  final bool secure;
-  final VoidCallback toggleSecure;
 
   const SignupFormFields({
     super.key,
@@ -21,9 +19,15 @@ class SignupFormFields extends StatelessWidget {
     required this.confirmPasswordController,
     required this.phoneController,
     required this.governorateController,
-    required this.secure,
-    required this.toggleSecure,
   });
+
+  @override
+  State<SignupFormFields> createState() => _SignupFormFieldsState();
+}
+
+class _SignupFormFieldsState extends State<SignupFormFields> {
+  bool securePassword = true;
+  bool secureConfirmPassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class SignupFormFields extends StatelessWidget {
       children: [
         TxtField(
           hinttxt: "User name",
-          controller: usernameController,
+          controller: widget.usernameController,
           cardcolor: Colours.primaryblue,
           hintcolor: Colors.white,
           stylecolor: Colors.white,
@@ -39,19 +43,29 @@ class SignupFormFields extends StatelessWidget {
         SizedBox(height: 1.h),
         TxtField(
           hinttxt: "Email",
-          controller: emailController,
+          controller: widget.emailController,
           cardcolor: Colours.primaryblue,
           hintcolor: Colors.white,
           stylecolor: Colors.white,
         ),
         SizedBox(height: 1.h),
-        _passwordField("Password", passwordController),
+        _passwordField(
+          "Password",
+          widget.passwordController,
+          securePassword,
+              () => setState(() => securePassword = !securePassword),
+        ),
         SizedBox(height: 1.h),
-        _passwordField("Confirm Password", confirmPasswordController),
+        _passwordField(
+          "Confirm Password",
+          widget.confirmPasswordController,
+          secureConfirmPassword,
+              () => setState(() => secureConfirmPassword = !secureConfirmPassword),
+        ),
         SizedBox(height: 1.h),
         TxtField(
           hinttxt: "Phone",
-          controller: phoneController,
+          controller: widget.phoneController,
           cardcolor: Colours.primaryblue,
           hintcolor: Colors.white,
           stylecolor: Colors.white,
@@ -59,7 +73,7 @@ class SignupFormFields extends StatelessWidget {
         SizedBox(height: 1.h),
         TxtField(
           hinttxt: "Governorate",
-          controller: governorateController,
+          controller: widget.governorateController,
           cardcolor: Colours.primaryblue,
           hintcolor: Colors.white,
           stylecolor: Colors.white,
@@ -69,7 +83,7 @@ class SignupFormFields extends StatelessWidget {
     );
   }
 
-  Widget _passwordField(String hint, TextEditingController controller) {
+  Widget _passwordField(String hint, TextEditingController controller, bool secure, VoidCallback toggleSecure) {
     return Container(
       decoration: BoxDecoration(
         color: Colours.primaryblue,

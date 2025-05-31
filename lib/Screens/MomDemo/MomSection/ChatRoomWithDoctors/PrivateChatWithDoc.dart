@@ -204,7 +204,7 @@ class _PrivateChatWithDocState extends State<PrivateChatWithDoc> {
             SizedBox(
               width: 1.5.w,
             ),
-            Text("Dr.${widget.chatRoom.name}"),
+            Text("${widget.chatRoom.name}"),
           ],
         ),
       ),

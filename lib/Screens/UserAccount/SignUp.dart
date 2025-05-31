@@ -20,7 +20,6 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  bool secure = true;
   String selectedRole = "";
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
@@ -104,8 +103,6 @@ class _SignUpState extends State<SignUp> {
                           confirmPasswordController: confirmPasswordController,
                           phoneController: phoneController,
                           governorateController: governorateController,
-                          secure: secure,
-                          toggleSecure: () => setState(() => secure = !secure),
                         ),
                         RoleSelector(
                           selectedRole: selectedRole,
@@ -139,9 +136,8 @@ class _SignUpState extends State<SignUp> {
                       String governorate = governorateController.text.trim();
                       String role = selectedRole.trim();
                       if(username.isEmpty &&email.isEmpty && password.isEmpty &&confirmPassword.isEmpty &&phone.isEmpty &&role.isEmpty &&governorate.isEmpty ){
-                        return showErrorMessage("All Fielad are required !");
+                        return showErrorMessage("All Fields are required !");
                       }
-
 
                       UserModel usermodel = UserModel(
                         userName: usernameController.text,

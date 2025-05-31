@@ -1,6 +1,7 @@
 import 'package:downcare/Apis/User/UserApis.dart';
 import 'package:downcare/Models/MessageModel.dart';
 import 'package:downcare/Modules/DeleteDialog.dart';
+import 'package:downcare/Screens/HomeScreen.dart';
 import 'package:downcare/Screens/MomDemo/MomSection/ChatRoomWithMoms/GroupMembers.dart';
 import 'package:downcare/utils/Colors.dart';
 import 'package:flutter/material.dart';
@@ -138,15 +139,44 @@ class _MomchatState extends State<Momchat> {
               ListTile(
                 leading: Icon(Icons.exit_to_app, color: Colors.red),
                 title: Text('Leave the Group', style: TextStyle(fontSize: 18.sp, color: Colors.red)),
-                onTap: () async {
-                  Navigator.pop(context);
-                  if (mounted) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => MomSection()),
-                    );
-                    await _signalRService.leaveGroup();
-                  }
+                onTap: () {
+                  showDialog(context: context, builder: (context) => AlertDialog(
+                      title: Text('Confirm Exit',style: TextStyle(
+                        color: Colors.red,
+
+                        fontSize: 20.sp
+                      ),),
+                      content: Text('Are you sure you want to leave the group?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('Cancel',style: TextStyle(
+                             color: Colours.primaryblue,
+                            fontSize: 16.sp
+                          ),),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text('Leave',style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.red
+                          ),),
+                          onPressed: () async {
+                        Navigator.pop(context);
+                        if (mounted) {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomeScreen()),
+                                (Route<dynamic> route) => false,
+                          );
+                        await _signalRService.leaveGroup();
+                        }
+                        },
+                        ),
+                      ]
+                   ,
+                  ),);
                 },
               ),
               ListTile(

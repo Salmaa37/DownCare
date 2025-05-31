@@ -41,7 +41,7 @@ class SectionLevels extends StatelessWidget {
                 final prefs = await SharedPreferences.getInstance();
                 final hasTakenTest = prefs.getBool('test_done_${type}_${l[index].level}') ?? false;
                 if (hasTakenTest) {
-                  Navigator.pushReplacementNamed(
+                  Navigator.pushNamed(
                     context,
                     TestResult.routeName,
                     arguments: {

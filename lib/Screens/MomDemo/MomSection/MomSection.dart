@@ -121,7 +121,7 @@ class _MomSectionState extends State<MomSection> {
                             if (_signalRService.isConnected) {
                               _signalRService.joinGroup();
 
-                              Navigator.pushReplacementNamed(context, Momchat.routeName);
+                              Navigator.pushNamed(context, Momchat.routeName);
                             } else {
                               print(" الاتصال فشل");
                             }
