@@ -58,13 +58,6 @@ class _EditProfileState extends State<DoctorEditProfile> {
   Widget build(BuildContext context) {
     var model = ModalRoute.of(context)!.settings.arguments as LoginUserModel?;
 
-
-    if (username.text.isEmpty) username.text = model?.userName ?? "";
-    if (email.text.isEmpty) email.text = model?.email ?? "";
-    if (phone.text.isEmpty) phone.text = model?.phone ?? "";
-    if (governorate.text.isEmpty) governorate.text = model?.governorate ?? "";
-    if (bio.text.isEmpty) bio.text = model?.bio ?? "";
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -72,80 +65,109 @@ class _EditProfileState extends State<DoctorEditProfile> {
         backgroundColor: Colors.white,
         title: Text(
           "Edit Profile",
-          style: TextStyle(fontSize: 18.sp, color: Colours.primaryblue),
+          style: TextStyle(
+            fontSize: 18.sp,
+            color: Colours.primaryblue,
+          ),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(14.0),
         child: SingleChildScrollView(
           child: Column(
-            spacing: 1.h,
+
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
                 child: GestureDetector(
-                  onTap: pickImage,
+                  onTap: () {
+                    pickImage();
+                  },
                   child: CircleAvatar(
                     radius: 80,
                     backgroundColor: Colours.primaryblue,
                     backgroundImage: _imageFile != null
                         ? FileImage(_imageFile!)
-                        : (model?.imagePath != null && model!.imagePath!.isNotEmpty)
-                        ? NetworkImage(model!.imagePath!) as ImageProvider
-                        : null,
+                        : (model?.imagePath != null && model!.imagePath!.isNotEmpty
+                        ? NetworkImage(model.imagePath!)
+                        : null) as ImageProvider<Object>?,
                     child: (_imageFile == null &&
                         (model?.imagePath == null || model!.imagePath!.isEmpty))
-                        ? Icon(Icons.camera_alt, color: Colors.white, size: 13.w)
+                        ? Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                      size: 13.w,
+                    )
                         : null,
                   ),
                 ),
               ),
               SizedBox(height: 1.h),
-              Text("Username",
-                  style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp)),
+
+              Text(
+                "Username",
+                style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp),
+              ),
               TxtField(
-                hinttxt: "",
+                hinttxt: model?.userName ?? "",
                 controller: username,
                 cardcolor: Colours.primarygrey,
                 hintcolor: Colours.primaryblue,
-                stylecolor: Colours.primaryblue,
+                stylecolor: Colors.black,
               ),
-              Text("Email",
-                  style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp)),
+              SizedBox(height: 1.h),
+
+              Text(
+                "Email",
+                style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp),
+              ),
               TxtField(
-                hinttxt: "",
+                hinttxt: model?.email ?? "",
                 controller: email,
                 cardcolor: Colours.primarygrey,
                 hintcolor: Colours.primaryblue,
-                stylecolor: Colours.primaryblue,
+                stylecolor: Colors.black,
               ),
-              Text("Phone",
-                  style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp)),
+              SizedBox(height: 1.h),
+
+              Text(
+                "Phone",
+                style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp),
+              ),
               TxtField(
-                hinttxt: "",
+                hinttxt: model?.phone ?? "",
                 controller: phone,
                 cardcolor: Colours.primarygrey,
                 hintcolor: Colours.primaryblue,
-                stylecolor: Colours.primaryblue,
+                stylecolor: Colors.black,
               ),
-              Text("Governorate",
-                  style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp)),
+              SizedBox(height: 1.h),
+
+              Text(
+                "Governorate",
+                style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp),
+              ),
               TxtField(
-                hinttxt: "",
+                hinttxt: model?.governorate ?? "",
                 controller: governorate,
                 cardcolor: Colours.primarygrey,
                 hintcolor: Colours.primaryblue,
-                stylecolor: Colours.primaryblue,
+                stylecolor: Colors.black,
               ),
-              Text("Specialization",
-                  style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp)),
+              SizedBox(height: 1.h),
+
+              Text(
+                "Specialization",
+                style: TextStyle(color: Colours.primaryblue, fontSize: 16.sp),
+              ),
               TxtField(
-                hinttxt: "",
+                hinttxt: model?.bio ?? "",
                 controller: bio,
                 cardcolor: Colours.primarygrey,
                 hintcolor: Colours.primaryblue,
-                stylecolor: Colours.primaryblue,
+                stylecolor: Colors.black,
               ),
+              SizedBox(height: 2.h),
             ],
           ),
         ),
@@ -164,8 +186,10 @@ class _EditProfileState extends State<DoctorEditProfile> {
                   userName: username.text.isNotEmpty
                       ? username.text
                       : model?.userName ?? "",
-                  email: email.text.isNotEmpty ? email.text : model?.email ?? "",
-                  phone: phone.text.isNotEmpty ? phone.text : model?.phone ?? "",
+                  email:
+                  email.text.isNotEmpty ? email.text : model?.email ?? "",
+                  phone:
+                  phone.text.isNotEmpty ? phone.text : model?.phone ?? "",
                   governorate: governorate.text.isNotEmpty
                       ? governorate.text
                       : model?.governorate ?? "",
@@ -175,20 +199,13 @@ class _EditProfileState extends State<DoctorEditProfile> {
                 UserApis.updateProfile(
                   userModel,
                   imageFile: _imageFile,
-                  onSuccess: (String? newImageUrl) {
+                  onSuccess: () {
                     setState(() {
+                      model?.bio = userModel.bio;
                       model?.userName = userModel.userName;
                       model?.email = userModel.email;
                       model?.phone = userModel.phone;
                       model?.governorate = userModel.governorate;
-                      model?.bio = userModel.bio;
-
-
-                      if (newImageUrl != null && newImageUrl.isNotEmpty) {
-                        model?.imagePath = newImageUrl;
-                      } else if (_imageFile != null) {
-                        model?.imagePath = _imageFile!.path;
-                      }
                     });
                     showSuccessMessage("Your profile updated successfully !");
                     Navigator.pop(context, model);
